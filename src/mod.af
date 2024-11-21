@@ -13,6 +13,8 @@ class LoadingBar {
 	private mutable bool kill = false;
 	private mutable bool updated = true;
     private mutable AsyncResult result;
+	private mutable bool started = false;
+	private mutable bool finished = false;
 
 	LoadingBar init(int max, * int resolution) {
 		if resolution == 0 my.resolution = 20;
@@ -43,12 +45,16 @@ class LoadingBar {
 		};
 		strBuff = `{strBuff}] {my.current * 100 / my.max}% `;
 		str.print(strBuff);
+		if my.current == my.max {
+			my.finished = true;
+		};
 	};
 
 	void kill() {
 		my.kill = true;
-        if my.result != NULL {
-            my.result.await();
+        if my.started {
+            my.result.kill();
+			return;
         };
 	};
 
@@ -56,7 +62,12 @@ class LoadingBar {
 		return my.kill;
 	};
 
+	bool isFinished() {
+		return my.finished;
+	};
+
     void run() {
+		my.started = true;
         my.result = runLoadingBar(my);
     };
 };
@@ -65,15 +76,12 @@ export LoadingBar createLoadingBar(int max, * int resolution) {
 	return async.makeShared(LoadingBar, LoadingBar.init, max, resolution);
 };
 
-private any runLoadingBar(LoadingBar bar) : async.worker {
+private AsyncResult runLoadingBar(LoadingBar bar) : async.worker {
 	while true {
-		bar.print();
-		if bar.isKilled() {
+		if bar.isFinished() {
 			break;
 		};
+		bar.print();
 	};
-	return NULL;
+	return "Done!";
 };
-
-
-
