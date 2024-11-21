@@ -61,7 +61,7 @@ class LoadingBar {
     };
 };
 
-export adr createLoadingBar(int max, * int resolution) {
+export LoadingBar createLoadingBar(int max, * int resolution) {
 	return async.makeShared(LoadingBar, LoadingBar.init, max, resolution);
 };
 
