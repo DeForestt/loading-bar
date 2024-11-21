@@ -1,6 +1,6 @@
 .needs <std>
 import { worker, makeShared } from "concurrency" under async;
-import AsyncResult from "concurrency";
+import AsyncResult, AsyncOutput from "concurrency";
 import { print } from "String" under str;
 import string from "String";
 
@@ -83,5 +83,6 @@ private AsyncResult runLoadingBar(LoadingBar bar) : async.worker {
 		};
 		bar.print();
 	};
-	return "Done!";
+	adr k = new AsyncOutput(true, NULL);
+	return k;
 };
